@@ -1,0 +1,41 @@
+﻿@page "/tasks"
+@using TaskManagerLibrary.Dtos
+@inject HttpClient Http
+
+<h3>TaskList</h3>
+
+@if (tasks == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (tasks.Count == 0)
+{
+    <p>No tasks available.</p>
+}
+else
+{
+    <ul>
+        @foreach (var task in tasks)
+        {
+            <li>@task.Title</li>
+        }
+    </ul>
+    
+}
+
+@code {
+    private List<TaskItemDto>? tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            tasks = await Http.GetFromJsonAsync<List<TaskItemDto>>("api/Task");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error fetching tasks: {ex.Message}");
+            tasks = new List<TaskItemDto>(); // Handle error gracefully
+        }
+    }
+}

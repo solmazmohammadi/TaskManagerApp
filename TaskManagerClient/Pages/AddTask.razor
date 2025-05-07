@@ -1,0 +1,41 @@
+﻿@page "/add-task"
+
+@using System.Net.Http.Json
+@using TaskManagerLibrary.Dtos
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>Add New Task</h3>
+
+<EditForm Model="@newTask" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Task Title</label>
+        <InputText @bind-Value="newTask.Title" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Add Task</button>
+</EditForm>
+
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p class="text-success">@message</p>
+}
+
+@code {
+    private TaskItemDto newTask = new() { Title = string.Empty };
+    private string message;
+
+    [Inject]
+    public HttpClient Http { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        newTask.CategoryId = 1;
+        await Http.PostAsJsonAsync("api/Task", newTask);
+        message = "Task added successfully!";
+        newTask = new() { Title = string.Empty };
+    }
+}
