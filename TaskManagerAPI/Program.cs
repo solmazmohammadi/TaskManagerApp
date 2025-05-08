@@ -4,6 +4,8 @@ using TaskManagerAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001");
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<TaskContext>(options =>
@@ -21,7 +23,6 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(TaskManagerAPI.Profiles.TaskProfile));
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -41,8 +42,6 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
-
-
 
 app.UseCors("AllowAll");
 
